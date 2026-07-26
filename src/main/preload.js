@@ -31,10 +31,7 @@ contextBridge.exposeInMainWorld('api', {
     crear: (datos) => ipcRenderer.invoke('protocolos:crear', datos),
     generarPdf: (protocoloId) => ipcRenderer.invoke('protocolos:generarPdf', protocoloId),
   },
-  fotos: {
-    elegirYAgregar: (protocoloId) => ipcRenderer.invoke('fotos:elegirYAgregar', protocoloId),
-    listar: (protocoloId) => ipcRenderer.invoke('fotos:listar', protocoloId),
-  },
+
   log: {
     resumenPorEstado: () => ipcRenderer.invoke('log:resumenPorEstado'),
     listarProtocolos: (filtro) => ipcRenderer.invoke('log:listarProtocolos', filtro),

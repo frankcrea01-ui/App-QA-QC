@@ -39,18 +39,15 @@ export default function FormMetadatosPlantilla({ metadatos, especialidades, onCh
 
       <label>
         Especialidad
-        <input
-          type="text"
-          list="lista-especialidades"
+        <select
           value={metadatos.especialidad}
           onChange={(e) => actualizar('especialidad', e.target.value)}
-          placeholder="ej: estructura"
-        />
-        <datalist id="lista-especialidades">
+        >
+          <option value="">Elegir especialidad…</option>
           {especialidades.map((esp) => (
-            <option key={esp} value={esp} />
+            <option key={esp} value={esp}>{esp}</option>
           ))}
-        </datalist>
+        </select>
       </label>
     </fieldset>
   );

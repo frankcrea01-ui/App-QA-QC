@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import CampoDinamico from './CampoDinamico.jsx';
-import PanelFotos from './PanelFotos.jsx';
 import BotonGenerarPdf from './BotonGenerarPdf.jsx';
 import { useConstantes } from '../constantes.js';
 
@@ -101,7 +100,6 @@ export default function FormularioCampo({ template, sesion, onVolver }) {
 
         <BotonGenerarPdf protocoloId={resultado.protocoloId} />
 
-        <PanelFotos protocoloId={resultado.protocoloId} />
         <button type="button" onClick={onVolver}>Llenar otro protocolo</button>
       </div>
     );

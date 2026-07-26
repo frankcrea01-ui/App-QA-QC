@@ -1,16 +1,13 @@
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
-const sharp = require('sharp');
+
 
 const queries = require('../../db/queries');
 const { generarCodigoUnico, obtenerOCrearIdDispositivo } = require('../../core/codigoUnico');
 const { siguienteCorrelativoVisible } = require('../../core/correlativo');
-const { validarValoresProtocolo, validarLimiteFotos } = require('../../core/validaciones');
+const { validarValoresProtocolo } = require('../../core/validaciones');
 const { generarPdfLlenado } = require('../pdf/generarPdf');
-
-const ANCHO_MAXIMO_FOTO = 1280;
-const CALIDAD_JPEG = 72;
 
 /**
  * Deriva las 2 iniciales que van en el id de dispositivo. Se limpian tildes
@@ -162,61 +159,6 @@ function registrar(ipcMain, { db, dialog, shell, carpetaFotos, carpetaProtocolos
     return { ok: true, ruta: rutaSalida, advertencias };
   });
 
-  ipcMain.handle('fotos:elegirYAgregar', async (event, protocoloId) => {
-    const permiso = validarLimiteFotos(queries.contarFotosDeProtocolo(db, protocoloId));
-    if (!permiso.permitido) return { ok: false, mensaje: permiso.mensaje };
-
-    const resultado = await dialog.showOpenDialog({
-      properties: ['openFile', 'multiSelections'],
-      filters: [{ name: 'Imágenes', extensions: ['jpg', 'jpeg', 'png', 'webp'] }],
-    });
-    if (resultado.canceled || resultado.filePaths.length === 0) return { ok: true, agregadas: [] };
-
-    fs.mkdirSync(carpetaFotos, { recursive: true });
-
-    const agregadas = [];
-    const omitidas = [];
-    let total = queries.contarFotosDeProtocolo(db, protocoloId);
-
-    for (const rutaOrigen of resultado.filePaths) {
-      if (!validarLimiteFotos(total).permitido) {
-        omitidas.push(path.basename(rutaOrigen));
-        continue;
-      }
-
-      const nombreArchivo = `protocolo${protocoloId}_${Date.now()}_${total + 1}.jpg`;
-      const rutaDestino = path.join(carpetaFotos, nombreArchivo);
-
-      try {
-        await sharp(rutaOrigen)
-          .resize({ width: ANCHO_MAXIMO_FOTO, height: ANCHO_MAXIMO_FOTO, fit: 'inside', withoutEnlargement: true })
-          .jpeg({ quality: CALIDAD_JPEG })
-          .toFile(rutaDestino);
-      } catch (error) {
-        // Un archivo corrupto no debe abortar las fotos que sí sirven.
-        omitidas.push(path.basename(rutaOrigen));
-        continue;
-      }
-
-      total += 1;
-      const tamanoKb = Math.round(fs.statSync(rutaDestino).size / 1024);
-      const fotoId = queries.agregarFoto(db, protocoloId, {
-        ruta_local: rutaDestino,
-        orden: total,
-        tamano_kb: tamanoKb,
-      });
-
-      agregadas.push({ id: fotoId, ruta_local: rutaDestino, tamano_kb: tamanoKb, orden: total });
-    }
-
-    const mensaje = omitidas.length > 0
-      ? `No se pudieron agregar ${omitidas.length} archivo(s): ${omitidas.join(', ')}.`
-      : undefined;
-
-    return { ok: true, agregadas, mensaje };
-  });
-
-  ipcMain.handle('fotos:listar', (event, protocoloId) => queries.listarFotosDeProtocolo(db, protocoloId));
 }
 
 module.exports = { registrar, inicialesDe, idDeEsteDispositivo, valoresAutomaticos };

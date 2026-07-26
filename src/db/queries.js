@@ -55,9 +55,9 @@ function agregarCampoATemplate(db, templateId, campo) {
 
   const stmt = db.prepare(`
     INSERT INTO template_fields
-      (template_id, clave_campo, etiqueta, tipo_dato, obligatorio, ejemplo, descripcion, pagina, x, y, ancho, alto, orden)
+      (template_id, clave_campo, etiqueta, tipo_dato, obligatorio, opciones, ejemplo, descripcion, pagina, x, y, ancho, alto, orden)
     VALUES
-      (@template_id, @clave_campo, @etiqueta, @tipo_dato, @obligatorio, @ejemplo, @descripcion, @pagina, @x, @y, @ancho, @alto, @orden)
+      (@template_id, @clave_campo, @etiqueta, @tipo_dato, @obligatorio, @opciones, @ejemplo, @descripcion, @pagina, @x, @y, @ancho, @alto, @orden)
   `);
   const info = stmt.run({
     template_id: templateId,
@@ -65,6 +65,7 @@ function agregarCampoATemplate(db, templateId, campo) {
     etiqueta: campo.etiqueta,
     tipo_dato: campo.tipo_dato,
     obligatorio: campo.obligatorio ? 1 : 0,
+    opciones: campo.opciones || null,
     ejemplo: campo.ejemplo || null,
     descripcion: campo.descripcion || null,
     pagina: campo.pagina || 1,
@@ -272,29 +273,6 @@ function listarTemplatesActivos(db, { especialidad } = {}) {
   return db.prepare(sql).all(params);
 }
 
-function contarFotosDeProtocolo(db, protocoloId) {
-  return db.prepare(`SELECT COUNT(*) AS total FROM fotos WHERE protocolo_id = ?`).get(protocoloId).total;
-}
-
-function agregarFoto(db, protocoloId, { ruta_local, ruta_nube, descripcion, orden, tamano_kb }) {
-  const info = db.prepare(`
-    INSERT INTO fotos (protocolo_id, ruta_local, ruta_nube, descripcion, orden, tamano_kb)
-    VALUES (@protocolo_id, @ruta_local, @ruta_nube, @descripcion, @orden, @tamano_kb)
-  `).run({
-    protocolo_id: protocoloId,
-    ruta_local,
-    ruta_nube: ruta_nube || null,
-    descripcion: descripcion || null,
-    orden,
-    tamano_kb: tamano_kb || null,
-  });
-  return info.lastInsertRowid;
-}
-
-function listarFotosDeProtocolo(db, protocoloId) {
-  return db.prepare(`SELECT * FROM fotos WHERE protocolo_id = ? ORDER BY orden ASC, id ASC`).all(protocoloId);
-}
-
 module.exports = {
   crearTemplate,
   actualizarRutaPdfDeTemplate,
@@ -311,9 +289,6 @@ module.exports = {
   listarTemplatesActivos,
   listarProyectosUsados,
   listarResponsablesUsados,
-  contarFotosDeProtocolo,
-  agregarFoto,
-  listarFotosDeProtocolo,
   obtenerProtocolo,
   obtenerValoresDeProtocolo,
   obtenerHistorialDeProtocolo,

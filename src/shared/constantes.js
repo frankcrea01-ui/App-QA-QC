@@ -20,8 +20,7 @@ const TIPOS_DATO = ['texto', 'fecha', 'check', 'correlativo', 'proyecto', 'respo
 /** Tipos que la app completa sin intervención: no se piden ni pueden ser obligatorios. */
 const TIPOS_AUTOMATICOS = ['correlativo', 'proyecto', 'responsable'];
 
-/** Tope de fotos por protocolo (regla de negocio, se valida en /core). */
-const MAX_FOTOS_POR_PROTOCOLO = 5;
+
 
 /**
  * Prefijo de 3 letras usado en el código único, por especialidad.
@@ -48,6 +47,5 @@ module.exports = {
   ESTADOS_PROTOCOLO,
   TIPOS_DATO,
   TIPOS_AUTOMATICOS,
-  MAX_FOTOS_POR_PROTOCOLO,
   PREFIJOS_ESPECIALIDAD,
 };

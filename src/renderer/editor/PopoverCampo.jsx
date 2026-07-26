@@ -20,17 +20,25 @@ export default function PopoverCampo({ zona, tiposDato, tiposAutomaticos, onConf
   const [etiqueta, setEtiqueta] = useState('');
   const [tipoDato, setTipoDato] = useState('texto');
   const [obligatorio, setObligatorio] = useState(false);
+  const [formatoCorrelativo, setFormatoCorrelativo] = useState('001');
+  const [filasCheck, setFilasCheck] = useState(1);
+  const [columnasCheck, setColumnasCheck] = useState(1);
 
   // Un tipo automático siempre se llena, así que "obligatorio" no aplica.
   const esAutomatico = tiposAutomaticos.includes(tipoDato);
 
   function manejarSubmit(evento) {
     evento.preventDefault();
+    let opciones = null;
+    if (tipoDato === 'correlativo') opciones = JSON.stringify({ formato: formatoCorrelativo });
+    if (tipoDato === 'check') opciones = JSON.stringify({ filas: filasCheck, columnas: columnasCheck });
+
     onConfirmar({
       ...zona,
       etiqueta: etiqueta.trim(),
       tipo_dato: tipoDato,
       obligatorio: esAutomatico ? false : obligatorio,
+      opciones,
     });
   }
 
@@ -39,19 +47,7 @@ export default function PopoverCampo({ zona, tiposDato, tiposAutomaticos, onConf
       <form className="popover-campo" onSubmit={manejarSubmit}>
         <h3>Nueva zona (página {zona.pagina})</h3>
 
-        <label>
-          Etiqueta
-          <input
-            type="text"
-            autoFocus
-            value={etiqueta}
-            onChange={(e) => setEtiqueta(e.target.value)}
-            placeholder="ej: Proyecto"
-            required
-          />
-        </label>
-
-        <span className="titulo-tipo">¿Qué va acá?</span>
+        <span className="titulo-tipo">1. ¿Qué va acá?</span>
         <div className="botonera-tipo-dato">
           {tiposDato.map((tipo) => (
             <button
@@ -66,14 +62,63 @@ export default function PopoverCampo({ zona, tiposDato, tiposAutomaticos, onConf
         </div>
         <small className="ayuda-tipo">{AYUDA_TIPO[tipoDato]}</small>
 
+        <label>
+          2. Etiqueta
+          <input
+            type="text"
+            value={etiqueta}
+            onChange={(e) => setEtiqueta(e.target.value)}
+            placeholder="ej: Proyecto"
+            required
+          />
+        </label>
+
+        {tipoDato === 'correlativo' && (
+          <label>
+            Formato de números (ej: 01, 001, 0001)
+            <input
+              type="text"
+              value={formatoCorrelativo}
+              onChange={(e) => setFormatoCorrelativo(e.target.value)}
+              placeholder="001"
+              required
+            />
+          </label>
+        )}
+
+        {tipoDato === 'check' && (
+          <div className="opciones-en-linea" style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+            <label>
+              Filas
+              <input
+                type="number"
+                min="1"
+                value={filasCheck}
+                onChange={(e) => setFilasCheck(parseInt(e.target.value, 10) || 1)}
+                style={{ width: '4rem', marginLeft: '0.5rem' }}
+              />
+            </label>
+            <label>
+              Columnas
+              <input
+                type="number"
+                min="1"
+                value={columnasCheck}
+                onChange={(e) => setColumnasCheck(parseInt(e.target.value, 10) || 1)}
+                style={{ width: '4rem', marginLeft: '0.5rem' }}
+              />
+            </label>
+          </div>
+        )}
+
         {!esAutomatico && (
-          <label className="linea-checkbox">
+          <label className="linea-checkbox" style={{ marginTop: '1rem' }}>
             <input
               type="checkbox"
               checked={obligatorio}
               onChange={(e) => setObligatorio(e.target.checked)}
             />
-            Obligatorio
+            3. Es obligatorio
           </label>
         )}
 

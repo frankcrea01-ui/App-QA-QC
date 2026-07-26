@@ -29,7 +29,7 @@ function registrar(ipcMain, { db, dialog, shell, carpetaEscaneados }) {
     return {
       protocolo,
       valores: queries.obtenerValoresDeProtocolo(db, protocoloId),
-      fotos: queries.listarFotosDeProtocolo(db, protocoloId),
+
       historial: queries.obtenerHistorialDeProtocolo(db, protocoloId),
     };
   });

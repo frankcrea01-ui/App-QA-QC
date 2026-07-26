@@ -4,7 +4,7 @@
  * en el editor, en modo campo, o en tests, sin duplicar reglas.
  */
 
-const { ESTADOS_PROTOCOLO, MAX_FOTOS_POR_PROTOCOLO } = require('../shared/constantes');
+const { ESTADOS_PROTOCOLO } = require('../shared/constantes');
 
 /**
  * Valida los valores capturados en modo campo contra la definición
@@ -45,22 +45,7 @@ function validarValoresProtocolo(templateFields, valores) {
   return { valido: errores.length === 0, errores };
 }
 
-/**
- * Valida que agregar una nueva foto no exceda el límite de 5 por protocolo.
- * Se valida aquí (capa /core) y NO se duplica esta regla en editor ni campo.
- *
- * @param {number} fotosActuales - cantidad de fotos ya guardadas para el protocolo
- * @returns {{ permitido: boolean, mensaje?: string }}
- */
-function validarLimiteFotos(fotosActuales) {
-  if (fotosActuales >= MAX_FOTOS_POR_PROTOCOLO) {
-    return {
-      permitido: false,
-      mensaje: `Límite de ${MAX_FOTOS_POR_PROTOCOLO} fotos por protocolo alcanzado.`,
-    };
-  }
-  return { permitido: true };
-}
+
 
 /**
  * Valida una transición de estado contra el flujo esperado.
@@ -96,8 +81,6 @@ function validarTransicionEstado(estadoActual, estadoNuevo, { reactivar = false 
 }
 
 module.exports = {
-  MAX_FOTOS_POR_PROTOCOLO,
   validarValoresProtocolo,
-  validarLimiteFotos,
   validarTransicionEstado,
 };

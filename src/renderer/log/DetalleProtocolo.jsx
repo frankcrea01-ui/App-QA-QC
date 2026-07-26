@@ -52,7 +52,7 @@ export default function DetalleProtocolo({ protocoloId, estados, onCerrar, onCam
 
   if (!detalle) return <p>Cargando detalle…</p>;
 
-  const { protocolo, valores, fotos, historial } = detalle;
+  const { protocolo, valores, historial } = detalle;
   const estaAnulado = protocolo.estado === 'anulado';
 
   return (
@@ -89,17 +89,6 @@ export default function DetalleProtocolo({ protocoloId, estados, onCerrar, onCam
           ))}
         </tbody>
       </table>
-
-      <h3>Fotos ({fotos.length})</h3>
-      {fotos.length === 0 ? (
-        <p className="tabla-campos-vacia">Sin fotos adjuntas.</p>
-      ) : (
-        <ul>
-          {fotos.map((f) => (
-            <li key={f.id}>{f.ruta_local.split(/[\\/]/).pop()} — {f.tamano_kb} KB</li>
-          ))}
-        </ul>
-      )}
 
       <h3>Historial de estados</h3>
       <table className="tabla-campos">

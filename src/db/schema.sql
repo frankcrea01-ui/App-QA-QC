@@ -40,11 +40,12 @@ CREATE TABLE IF NOT EXISTS template_fields (
   template_id   INTEGER NOT NULL REFERENCES templates(id) ON DELETE CASCADE,
   clave_campo   TEXT NOT NULL,           -- identificador interno estable, se genera desde la etiqueta
   etiqueta      TEXT NOT NULL,           -- texto mostrado al usuario
-  -- Sin CHECK a propósito: la lista de tipos válidos vive en /shared/constantes.js
+  -- Sin chequeo estricto a propósito: la lista de tipos válidos vive en /shared/constantes.js
   -- y se valida en queries.agregarCampoATemplate. Un CHECK acá duplicaría esa
   -- lista y obligaría a migrar la base cada vez que se agrega un tipo.
   tipo_dato     TEXT NOT NULL,
   obligatorio   INTEGER NOT NULL DEFAULT 0,   -- 0/1
+  opciones      TEXT,                    -- JSON de configuración adicional (filas, columnas, formato, etc.)
   ejemplo       TEXT,                    -- sin uso desde el bloque 1 (ver docs/decisiones-ui.md, D1)
   descripcion   TEXT,                    -- sin uso desde el bloque 1
   pagina        INTEGER NOT NULL DEFAULT 1,

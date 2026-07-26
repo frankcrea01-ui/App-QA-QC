@@ -94,12 +94,24 @@ function retirarEstadoEnRevision(db) {
   return true;
 }
 
+function agregarColumnaOpciones(db) {
+  const tabla = db
+    .prepare(`SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'template_fields'`)
+    .get();
+
+  if (!tabla || tabla.sql.includes('opciones')) return false;
+
+  db.exec(`ALTER TABLE template_fields ADD COLUMN opciones TEXT`);
+  return true;
+}
+
 /** Aplica todas las migraciones pendientes. Se llama al abrir la base. */
 function aplicarMigraciones(db) {
   return {
     tiposDeZona: migrarTiposDeZona(db),
     estadoEnRevision: retirarEstadoEnRevision(db),
+    opciones: agregarColumnaOpciones(db),
   };
 }
 
-module.exports = { aplicarMigraciones, migrarTiposDeZona, retirarEstadoEnRevision };
+module.exports = { aplicarMigraciones, migrarTiposDeZona, retirarEstadoEnRevision, agregarColumnaOpciones };
