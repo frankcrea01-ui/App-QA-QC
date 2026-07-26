@@ -1,0 +1,56 @@
+.nav-modos,
+.nav-secciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Modos (roles): la decisión principal, con más peso visual. */
+.nav-modos {
+  padding: 10px 16px;
+  background: #e8eaed;
+  border-bottom: 1px solid #ccc;
+}
+
+.nav-modos button {
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.nav-modos button.activo {
+  background: #1565c0;
+  color: white;
+  border-color: #1565c0;
+}
+
+/* Secciones dentro de un modo: navegación secundaria, más liviana. */
+.nav-secciones {
+  padding: 6px 16px;
+  background: #f6f7f8;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.nav-secciones button {
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+}
+
+.nav-secciones button.activo {
+  border-bottom-color: #1565c0;
+  color: #1565c0;
+  font-weight: 600;
+}
+
+.boton-ayuda {
+  margin-left: auto;
+  font-weight: normal !important;
+}

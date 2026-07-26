@@ -1,0 +1,103 @@
+.log-maestro {
+  font-family: system-ui, sans-serif;
+  padding: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.tarjetas-resumen {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tarjeta-estado {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta-total {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.tarjeta-nombre {
+  font-size: 0.8rem;
+  text-transform: capitalize;
+  color: #555;
+}
+
+.tarjeta-cerrado { border-color: #2e7d32; }
+.tarjeta-en_firma { border-color: #f9a825; }
+.tarjeta-anulado { border-color: #c62828; }
+
+.filtros-log {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.filtros-log label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 4px;
+}
+
+.detalle-protocolo h3 {
+  margin-top: 20px;
+  margin-bottom: 6px;
+}
+
+.form-cambiar-estado {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.aviso-anulado {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 4px solid #c62828;
+  background: #fdecea;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.cierre-protocolo {
+  margin-top: 8px;
+}
+
+.paso-ciclo {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: #f6f7f8;
+  border-left: 4px solid #bbb;
+}
+
+.paso-en_proceso { border-left-color: #1565c0; }
+.paso-en_firma { border-left-color: #f9a825; background: #fff6e0; }
+.paso-cerrado { border-left-color: #2e7d32; background: #e3f2e4; }
+.paso-anulado { border-left-color: #c62828; background: #fdecea; }
+
+.acciones-cierre {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ruta-escaneado {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+.generar-pdf {
+  margin-top: 8px;
+}

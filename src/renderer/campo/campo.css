@@ -1,0 +1,108 @@
+.selector-plantilla,
+.formulario-campo {
+  font-family: system-ui, sans-serif;
+  max-width: 480px;
+  margin: 24px auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.campo-dinamico {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.campo-check {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+}
+
+/* Sesión de obra: se define una vez y queda a la vista todo el turno. */
+.barra-sesion {
+  font-family: system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  background: #f6f7f8;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.85rem;
+}
+
+.barra-sesion-edicion {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.barra-sesion-aviso {
+  margin: 0;
+  color: #555;
+}
+
+.barra-sesion-campos {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.barra-sesion-campos label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bloque-automatico {
+  background: #f6f7f8;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+}
+
+.titulo-automatico {
+  color: #666;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.linea-automatica {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.marca-obligatorio {
+  color: #c62828;
+}
+
+.selector-plantilla ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selector-plantilla button {
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+}
+
+.panel-fotos {
+  border-top: 1px solid #ddd;
+  margin-top: 16px;
+  padding-top: 12px;
+}
+
+.panel-fotos ul {
+  padding-left: 18px;
+  font-size: 0.85rem;
+}

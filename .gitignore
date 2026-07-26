@@ -1,0 +1,17 @@
+node_modules/
+dist/
+
+# Configuración local de Claude Code: rutas y permisos de esta máquina.
+.claude/settings.local.json
+
+# Bases de datos locales generadas al correr la demo o la app
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+*.db-shm
+*.db-wal
+
+# Artefactos temporales de pruebas manuales
+scratch/
+muestras/

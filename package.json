@@ -1,0 +1,31 @@
+{
+  "name": "app-trazabilidad-protocolos",
+  "version": "0.1.0",
+  "description": "Prototipo funcional — núcleo de datos y lógica (Fase 1 de la hoja de ruta)",
+  "main": "src/main/index.js",
+  "scripts": {
+    "test": "node scripts/asegurar-binario.js node && node --test \"tests/*.test.js\"",
+    "limpiar": "node scripts/limpiar-datos.js",
+    "muestra": "node scripts/asegurar-binario.js node && node scripts/muestra-pdf.js",
+    "demo": "node scripts/asegurar-binario.js node && node demo.js",
+    "dev": "node scripts/asegurar-binario.js electron && concurrently -k \"vite\" \"npm:dev:electron\"",
+    "dev:electron": "wait-on tcp:5173 && electron .",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "better-sqlite3": "12.11.1",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.7.76",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.7.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "electron": "33.2.1",
+    "vite": "^5.4.11",
+    "wait-on": "^8.0.1"
+  }
+}

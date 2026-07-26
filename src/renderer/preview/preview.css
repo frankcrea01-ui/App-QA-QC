@@ -1,0 +1,26 @@
+.zonas-rellenas-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.zona-rellena {
+  position: absolute;
+  border: 2px solid;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  overflow: hidden;
+}
+
+.zona-rellena-texto {
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #222;
+}

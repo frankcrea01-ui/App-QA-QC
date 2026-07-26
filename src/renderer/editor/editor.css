@@ -1,0 +1,285 @@
+.editor-plantilla {
+  font-family: system-ui, sans-serif;
+  padding: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.panel-plantillas-existentes {
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.panel-plantillas-existentes ul {
+  list-style: none;
+  padding: 0;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.panel-plantillas-existentes li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid #eee;
+}
+
+.panel-plantillas-existentes li:first-child {
+  border-top: none;
+}
+
+.plantilla-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.plantilla-meta {
+  color: #666;
+  font-size: 0.78rem;
+}
+
+.plantilla-versiones {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 0.75rem;
+}
+
+.plantilla-versiones span {
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.plantilla-acciones {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Un borrador sin aprobar es trabajo a medio terminar: se destaca. */
+.accion-borrador {
+  background: #fff6e0;
+  border-color: #f9a825;
+  font-weight: 600;
+}
+
+.etiqueta-vigente {
+  background: #e3f2e4;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.etiqueta-sin-vigente {
+  background: #fdecea;
+  color: #c62828;
+}
+
+.etiqueta-borrador {
+  background: #fff6e0;
+  color: #a06800;
+}
+
+.etiqueta-reemplazadas {
+  background: #eee;
+  color: #666;
+}
+
+.aviso-heredado {
+  background: #fff6e0;
+  border-left: 4px solid #f9a825;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.panel-metadatos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.panel-metadatos label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 4px;
+}
+
+.panel-pdf {
+  margin-bottom: 24px;
+}
+
+.navegacion-paginas {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.lienzo-container {
+  position: relative;
+  display: inline-block;
+  border: 1px solid #ccc;
+}
+
+.canvas-pdf {
+  display: block;
+}
+
+.zona-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.zona-existente,
+.zona-en-curso {
+  position: absolute;
+  border: 2px solid;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.zona-obligatoria {
+  border-color: #2e7d32;
+  background: rgba(46, 125, 50, 0.15);
+}
+
+.zona-opcional {
+  border-color: #f9a825;
+  background: rgba(249, 168, 37, 0.15);
+}
+
+.zona-en-curso {
+  border-color: #1565c0;
+  border-style: dashed;
+  background: rgba(21, 101, 192, 0.1);
+}
+
+.leyenda {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.muestra-color {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid;
+  box-sizing: border-box;
+}
+
+.tabla-campos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.tabla-campos th,
+.tabla-campos td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.tabla-campos-vacia {
+  color: #777;
+  font-style: italic;
+}
+
+.total-campos {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: -8px;
+}
+
+.titulo-tipo {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ayuda-tipo {
+  color: #555;
+  margin-top: -4px;
+}
+
+.panel-guardar {
+  margin-top: 16px;
+}
+
+.mensaje-error {
+  color: #c62828;
+}
+
+.mensaje-ok {
+  color: #2e7d32;
+}
+
+.popover-fondo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.popover-campo {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.popover-campo label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+
+.linea-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 6px !important;
+}
+
+.botonera-tipo-dato {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.botonera-tipo-dato button {
+  padding: 6px 4px;
+  font-size: 0.8rem;
+}
+
+.botonera-tipo-dato button.activo {
+  background: #1565c0;
+  color: white;
+  border-color: #1565c0;
+}
+
+.botonera-popover {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
