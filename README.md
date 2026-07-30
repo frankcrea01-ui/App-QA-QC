@@ -17,7 +17,6 @@ npm install
 |---|---|
 | `npm run dev` | Levanta la app (Vite + Electron). |
 | `npm test` | Suite de pruebas de `/core`, `/db` y los handlers IPC. |
-| `npm run demo` | Recorre el núcleo de punta a punta por consola, sin UI. |
 | `npm run build` | Compila el renderer a `dist/renderer`. |
 
 `better-sqlite3` es un módulo nativo y necesita binarios distintos para Node y
@@ -28,8 +27,7 @@ recompila solo cuando hace falta, antes de cada comando.
 
 La app se organiza por rol, no por pantalla:
 
-- **Oficina de calidad** — el jefe de calidad diseña plantillas (editor sobre el
-  PDF + vista previa) y supervisa el **log maestro**.
+- **Oficina de calidad** — el jefe de calidad configura parámetros globales (múltiples obras, clientes, staff, registradores, especialidades), diseña plantillas (editor sobre el PDF + vista previa) y supervisa el **log maestro**.
 - **Registro en obra** — el personal de terreno elige un protocolo y lo llena.
   Sin login ni pasos previos: cada registro queda identificado por el
   `id_dispositivo`, y quien cambia un estado firma con su nombre en el historial.
@@ -48,7 +46,7 @@ src/
     ipc/                 → handlers, uno por área (meta, templates, config, protocolos, log)
     preload.js           → única superficie que el renderer ve del main
   renderer/              → UI en React
-    editor/ preview/ campo/ log/ onboarding/
+    config/ editor/ preview/ campo/ log/ edt/ onboarding/ shared/
 tests/                   → pruebas con el runner nativo de Node
 scripts/                 → utilidades de build
 ```
@@ -63,8 +61,7 @@ Reglas que sostienen la arquitectura:
 
 ## Estado
 
-Construido: editor de plantillas, vista previa, registro en obra con fotos
-comprimidas, log maestro, versionado de plantillas y onboarding.
+Construido: Configuración global (múltiples proyectos, staff, especialidades), editor de plantillas con soporte para zonas dinámicas y datos generales (obras/clientes vinculados), vista previa, registro en obra con fotos comprimidas, log maestro con visor de PDF y acciones rápidas, versionado de plantillas y onboarding interactivo.
 
 Pendiente: el módulo de **sincronización** (`/sync`) con Google Drive, que
 requiere credenciales OAuth propias (Client ID/Secret desde Google Cloud Console).
