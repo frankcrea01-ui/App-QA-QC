@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import EditorPlantilla from './editor/EditorPlantilla.jsx';
 import ModoCampo from './campo/ModoCampo.jsx';
 import LogMaestro from './log/LogMaestro.jsx';
+import EdtProtocolos from './edt/EdtProtocolos.jsx';
+import OficinaCalidad from './config/OficinaCalidad.jsx';
 import OnboardingJefe from './onboarding/OnboardingJefe.jsx';
 import './app.css';
 
@@ -15,7 +17,9 @@ const MODOS = [
     id: 'oficina',
     etiqueta: 'Oficina de calidad',
     secciones: [
+      { id: 'config', etiqueta: 'Oficina de calidad', Componente: OficinaCalidad },
       { id: 'plantillas', etiqueta: 'Plantillas', Componente: EditorPlantilla },
+      { id: 'edt', etiqueta: 'EDT Protocolos', Componente: EdtProtocolos },
       { id: 'log', etiqueta: 'Log maestro', Componente: LogMaestro },
     ],
   },
@@ -31,7 +35,7 @@ const SECCIONES = MODOS.flatMap((modo) => modo.secciones);
 
 export default function App() {
   const [modoId, setModoId] = useState('oficina');
-  const [seccionId, setSeccionId] = useState('plantillas');
+  const [seccionId, setSeccionId] = useState('config');
   const [mostrarOnboarding, setMostrarOnboarding] = useState(false);
   // Una sección visitada no se desmonta nunca más: se esconde. Si se
   // desmontara, ir al log a consultar algo borraría las zonas dibujadas en el
@@ -56,6 +60,8 @@ export default function App() {
   function cerrarOnboarding() {
     setMostrarOnboarding(false);
     window.api.config.marcarOnboardingVisto();
+    // Forzamos ir a config al terminar el onboarding
+    irASeccion('config');
   }
 
   const modo = MODOS.find((m) => m.id === modoId);
@@ -97,7 +103,7 @@ export default function App() {
 
       {SECCIONES.filter((s) => visitadas.has(s.id)).map(({ id, Componente }) => (
         <div key={id} style={{ display: id === seccion.id ? undefined : 'none' }}>
-          <Componente />
+          <Componente activo={id === seccion.id} />
         </div>
       ))}
 

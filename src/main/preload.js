@@ -24,6 +24,8 @@ contextBridge.exposeInMainWorld('api', {
     guardarSesion: (datos) => ipcRenderer.invoke('config:guardarSesion', datos),
     obtenerOnboardingVisto: () => ipcRenderer.invoke('config:obtenerOnboardingVisto'),
     marcarOnboardingVisto: () => ipcRenderer.invoke('config:marcarOnboardingVisto'),
+    obtenerOficina: () => ipcRenderer.invoke('config:obtenerOficina'),
+    guardarOficina: (config) => ipcRenderer.invoke('config:guardarOficina', config),
   },
   protocolos: {
     sugerencias: () => ipcRenderer.invoke('protocolos:sugerencias'),
@@ -37,7 +39,7 @@ contextBridge.exposeInMainWorld('api', {
     listarProtocolos: (filtro) => ipcRenderer.invoke('log:listarProtocolos', filtro),
     obtenerDetalle: (protocoloId) => ipcRenderer.invoke('log:obtenerDetalle', protocoloId),
     cambiarEstado: (datos) => ipcRenderer.invoke('log:cambiarEstado', datos),
-    adjuntarPdfEscaneado: (protocoloId) => ipcRenderer.invoke('log:adjuntarPdfEscaneado', protocoloId),
+    adjuntarPdfEscaneado: (datos) => ipcRenderer.invoke('log:adjuntarPdfEscaneado', datos),
     abrirEscaneado: (protocoloId) => ipcRenderer.invoke('log:abrirEscaneado', protocoloId),
   },
 });

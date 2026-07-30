@@ -13,21 +13,24 @@ const SIN_SUGERENCIAS = { proyectos: [], responsables: [] };
  */
 export default function ModoCampo() {
   const [sesion, setSesion] = useState(null); // null mientras carga
-  const [sugerencias, setSugerencias] = useState(SIN_SUGERENCIAS);
+  const [oficina, setOficina] = useState(null);
   const [template, setTemplate] = useState(null);
 
-  const cargarSugerencias = useCallback(
-    () => window.api.protocolos.sugerencias().then(setSugerencias),
-    []
-  );
+
 
   useEffect(() => {
     let vigente = true;
-    Promise.all([window.api.config.obtenerSesion(), window.api.protocolos.sugerencias()])
-      .then(([sesionGuardada, listas]) => {
+    Promise.all([window.api.config.obtenerSesion(), window.api.config.obtenerOficina()])
+      .then(([sesionGuardada, configOficina]) => {
         if (!vigente) return;
+        
+        // El proyecto siempre es el de la oficina si está configurado
+        if (configOficina.proyecto) {
+          sesionGuardada.proyecto = configOficina.proyecto;
+        }
+        
         setSesion(sesionGuardada);
-        setSugerencias(listas);
+        setOficina(configOficina);
       });
     return () => {
       vigente = false;
@@ -46,7 +49,7 @@ export default function ModoCampo() {
     <div className="modo-campo">
       <BarraSesion
         sesion={sesion}
-        sugerencias={sugerencias}
+        oficina={oficina}
         onGuardar={manejarGuardarSesion}
         obligatorio={sesionIncompleta}
       />
@@ -59,7 +62,8 @@ export default function ModoCampo() {
             onVolver={() => {
               setTemplate(null);
               // Un protocolo nuevo puede haber estrenado obra o responsable.
-              cargarSugerencias();
+              // Un protocolo nuevo ya no necesita recargar sugerencias, usamos oficina
+
             }}
           />
         ) : (

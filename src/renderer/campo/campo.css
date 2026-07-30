@@ -64,6 +64,43 @@
   font-size: 0.85rem;
 }
 
+.titulo-auto.mensaje-error {
+  color: #c92a2a;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Tabla Matriz de Check List */
+.campo-matriz {
+  overflow-x: auto;
+}
+
+.tabla-matriz {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.tabla-matriz th, .tabla-matriz td {
+  border: 1px solid var(--borde);
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.tabla-matriz th {
+  background-color: var(--fondo);
+  color: var(--texto-secundario);
+  font-weight: normal;
+}
+
+.tabla-matriz td:first-child {
+  text-align: left;
+  background-color: var(--fondo);
+  width: 30%;
+}
+
 .titulo-automatico {
   color: #666;
   font-size: 0.75rem;

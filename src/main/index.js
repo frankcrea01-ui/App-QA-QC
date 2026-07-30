@@ -22,7 +22,6 @@ function crearVentana() {
     win.loadFile(path.join(__dirname, '../../dist/renderer/index.html'));
   } else {
     win.loadURL('http://localhost:5173');
-    win.webContents.openDevTools();
     // Reenvía la consola del renderer al terminal, para no depender de DevTools.
     win.webContents.on('console-message', (event, nivel, mensaje, linea, origen) => {
       console.log(`[renderer] ${mensaje} (${origen}:${linea})`);

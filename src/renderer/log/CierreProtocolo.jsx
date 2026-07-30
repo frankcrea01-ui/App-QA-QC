@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useConstantes } from '../useConstantes.js';
 
 const PASOS = {
   en_proceso: { indice: 1, texto: 'Llenado. Falta generar el PDF para imprimir.' },
-  en_firma: { indice: 2, texto: 'Impreso y a la espera de la firma. Cuando vuelva firmado, cargá el escaneado.' },
+  en_firma: { indice: 2, texto: 'Impreso y a la espera de la firma. Cuando vuelva firmado, carga el escaneado.' },
   cerrado: { indice: 3, texto: 'Firmado y respaldado. El ciclo está completo.' },
   anulado: { indice: 0, texto: 'Anulado. Queda en el registro, no se borra.' },
 };
@@ -12,9 +13,11 @@ const PASOS = {
  * el protocolo pasa a cerrado solo — no hay que cambiar el estado a mano.
  */
 export default function CierreProtocolo({ protocolo, onCambio }) {
+  const { registradores } = useConstantes();
   const [trabajando, setTrabajando] = useState(false);
   const [mensaje, setMensaje] = useState(null);
   const [error, setError] = useState(null);
+  const [usuarioCierre, setUsuarioCierre] = useState(protocolo.creado_por || '');
 
   const paso = PASOS[protocolo.estado] || { indice: 0, texto: protocolo.estado };
   const tieneEscaneado = Boolean(protocolo.pdf_escaneado_link);
@@ -27,7 +30,10 @@ export default function CierreProtocolo({ protocolo, onCambio }) {
     setMensaje(null);
     setTrabajando(true);
     try {
-      const resultado = await window.api.log.adjuntarPdfEscaneado(protocolo.id);
+      const resultado = await window.api.log.adjuntarPdfEscaneado({
+        protocoloId: protocolo.id, 
+        usuario: usuarioCierre 
+      });
       if (!resultado.ok) {
         if (resultado.mensaje) setError(resultado.mensaje);
         return; // sin mensaje = el usuario canceló el diálogo
@@ -60,11 +66,27 @@ export default function CierreProtocolo({ protocolo, onCambio }) {
 
       <div className="acciones-cierre">
         {puedeCargar && (
-          <button type="button" onClick={manejarCargar} disabled={trabajando}>
-            {trabajando
-              ? 'Cargando…'
-              : tieneEscaneado ? 'Reemplazar escaneado firmado' : 'Cargar escaneado firmado'}
-          </button>
+          <div className="cierre-formulario">
+            <p className="cierre-pregunta">¿Quién carga este documento?</p>
+            {registradores && registradores.length > 0 ? (
+              <select value={usuarioCierre} onChange={(e) => setUsuarioCierre(e.target.value)}>
+                <option value="">Seleccionar registrador…</option>
+                {registradores.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            ) : (
+              <input 
+                type="text" 
+                value={usuarioCierre} 
+                onChange={(e) => setUsuarioCierre(e.target.value)} 
+                placeholder="Nombre del responsable" 
+              />
+            )}
+            <button type="button" onClick={manejarCargar} disabled={trabajando || !usuarioCierre}>
+              {trabajando
+                ? 'Cargando…'
+                : tieneEscaneado ? 'Reemplazar escaneado firmado' : 'Cargar escaneado firmado'}
+            </button>
+          </div>
         )}
 
         {tieneEscaneado && (

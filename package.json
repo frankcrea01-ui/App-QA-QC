@@ -6,8 +6,6 @@
   "scripts": {
     "test": "node scripts/asegurar-binario.js node && node --test \"tests/*.test.js\"",
     "limpiar": "node scripts/limpiar-datos.js",
-    "muestra": "node scripts/asegurar-binario.js node && node scripts/muestra-pdf.js",
-    "demo": "node scripts/asegurar-binario.js node && node demo.js",
     "dev": "node scripts/asegurar-binario.js electron && concurrently -k \"vite\" \"npm:dev:electron\"",
     "dev:electron": "wait-on tcp:5173 && electron .",
     "build": "vite build"

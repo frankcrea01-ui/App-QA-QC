@@ -20,6 +20,10 @@ function cargarConstantes() {
   return promesaCache;
 }
 
+export function invalidarConstantes() {
+  promesaCache = null;
+}
+
 export function useConstantes() {
   const [constantes, setConstantes] = useState(VACIAS);
 

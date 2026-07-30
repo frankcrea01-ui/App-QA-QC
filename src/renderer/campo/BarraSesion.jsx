@@ -7,7 +7,7 @@ import React, { useState } from 'react';
  * Los dos campos son listas que se retroalimentan: la primera vez se escribe
  * a mano, y desde ahí aparecen los valores ya usados, con el último arriba.
  */
-export default function BarraSesion({ sesion, sugerencias, onGuardar, obligatorio }) {
+export default function BarraSesion({ sesion, oficina, onGuardar, obligatorio }) {
   const [editando, setEditando] = useState(obligatorio);
   const [proyecto, setProyecto] = useState(sesion.proyecto || '');
   const [responsable, setResponsable] = useState(sesion.responsable || '');
@@ -17,7 +17,12 @@ export default function BarraSesion({ sesion, sugerencias, onGuardar, obligatori
     evento.preventDefault();
     setError(null);
     try {
-      await onGuardar({ proyecto, responsable });
+      let cliente = '';
+      if (oficina?.proyectos) {
+        const pObj = oficina.proyectos.find(p => p.nombre === proyecto);
+        if (pObj) cliente = pObj.cliente || '';
+      }
+      await onGuardar({ proyecto, responsable, cliente });
       setEditando(false);
     } catch (e) {
       setError(e.message || String(e));
@@ -41,45 +46,61 @@ export default function BarraSesion({ sesion, sugerencias, onGuardar, obligatori
     );
   }
 
+  const proyectosList = oficina?.proyectos || [];
+  const registradores = oficina?.registradores?.map(r => r.nombre) || [];
+
   return (
     <form className="barra-sesion barra-sesion-edicion" onSubmit={manejarGuardar}>
       {obligatorio && (
         <p className="barra-sesion-aviso">
-          Antes de empezar, indicá en qué obra estás y quién va a llenar los protocolos.
-          Se pide una sola vez.
+          Antes de empezar, indica quién va a llenar los protocolos.
+          Se pide una sola vez por sesión.
         </p>
       )}
 
       <div className="barra-sesion-campos">
         <label>
           Obra
-          <input
-            type="text"
-            list="obras-usadas"
-            value={proyecto}
-            onChange={(e) => setProyecto(e.target.value)}
-            placeholder="ej: PROY01"
-            autoFocus
-            required
-          />
-          <datalist id="obras-usadas">
-            {sugerencias.proyectos.map((p) => <option key={p} value={p} />)}
-          </datalist>
+          {proyectosList.length > 0 ? (
+            <select
+              value={proyecto}
+              onChange={(e) => setProyecto(e.target.value)}
+              required
+            >
+              <option value="">Seleccionar Obra...</option>
+              {proyectosList.map(p => <option key={p.nombre} value={p.nombre}>{p.nombre}</option>)}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={proyecto}
+              onChange={(e) => setProyecto(e.target.value)}
+              placeholder="ej: PROY01"
+              required
+            />
+          )}
         </label>
 
         <label>
           Responsable
-          <input
-            type="text"
-            list="responsables-usados"
-            value={responsable}
-            onChange={(e) => setResponsable(e.target.value)}
-            placeholder="ej: Juan Pérez"
-            required
-          />
-          <datalist id="responsables-usados">
-            {sugerencias.responsables.map((r) => <option key={r} value={r} />)}
-          </datalist>
+          {registradores.length > 0 ? (
+            <select
+              value={responsable}
+              onChange={(e) => setResponsable(e.target.value)}
+              required
+            >
+              <option value="">Seleccionar...</option>
+              {registradores.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={responsable}
+              onChange={(e) => setResponsable(e.target.value)}
+              placeholder="Tu Nombre"
+              required
+            />
+          )}
         </label>
 
         <button type="submit">Confirmar</button>

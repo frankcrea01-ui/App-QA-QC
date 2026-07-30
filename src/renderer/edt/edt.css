@@ -1,0 +1,175 @@
+/* ─────────────────────────────────────────────
+   EDT – Diagrama Vertical de Estructura
+   ───────────────────────────────────────────── */
+
+.edt-contenedor {
+  padding: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.edt-contenedor h1 {
+  margin-bottom: 0.25rem;
+}
+
+.edt-contenedor > p {
+  color: var(--texto-secundario);
+  margin-bottom: 1.5rem;
+}
+
+.edt-vacio {
+  text-align: center;
+  color: var(--texto-secundario);
+  padding: 3rem 0;
+}
+
+/* ── Diagrama ── */
+
+.edt-diagrama {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+/* ── Nodos ── */
+
+.edt-nodo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  border: 2px solid var(--borde);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  min-width: 200px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: relative;
+  text-align: center;
+}
+
+.edt-nodo-proyecto {
+  border-color: var(--primario, #4361ee);
+  background: linear-gradient(135deg, #eef2ff, #fff);
+}
+
+.edt-nodo-especialidad {
+  border-color: #6c757d;
+  background: linear-gradient(135deg, #f8f9fa, #fff);
+}
+
+.edt-nodo-icono {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.edt-nodo-titulo {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.edt-nodo-badge {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+  margin-top: 0.15rem;
+}
+
+/* ── Barra de progreso dentro del nodo ── */
+
+.edt-barra-progreso {
+  width: 100%;
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 3px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.edt-barra-relleno {
+  height: 100%;
+  background: linear-gradient(90deg, #40c057, #2f9e44);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* ── Líneas conectoras ── */
+
+.edt-linea-vertical {
+  width: 2px;
+  height: 28px;
+  background: var(--borde);
+}
+
+.edt-linea-corta {
+  height: 16px;
+}
+
+/* ── Nivel de hijos (especialidades) ── */
+
+.edt-nivel-hijos {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.edt-rama {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.edt-conector-h {
+  width: 2px;
+  height: 16px;
+  background: var(--borde);
+}
+
+/* ── Hojas (protocolos) ── */
+
+.edt-hojas-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.edt-hoja {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  border: 1px solid var(--borde);
+  background: #f8f9fa;
+  min-width: 180px;
+}
+
+.edt-hoja-en_proceso { border-left: 3px solid #ffc107; }
+.edt-hoja-en_firma   { border-left: 3px solid #17a2b8; }
+.edt-hoja-cerrado    { border-left: 3px solid #28a745; }
+.edt-hoja-anulado    { border-left: 3px solid #dc3545; opacity: 0.6; }
+
+.edt-estado-punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.estado-en_proceso { background: #ffc107; }
+.estado-en_firma   { background: #17a2b8; }
+.estado-cerrado    { background: #28a745; }
+.estado-anulado    { background: #dc3545; }
+
+.edt-hoja-codigo {
+  font-weight: 500;
+  flex: 1;
+}
+
+.edt-hoja-estado {
+  color: var(--texto-secundario);
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}

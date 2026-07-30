@@ -29,18 +29,39 @@ function registrar(ipcMain, { db }) {
   ipcMain.handle('config:obtenerSesion', () => ({
     proyecto: leerConfig(db, 'sesion_proyecto'),
     responsable: leerConfig(db, 'sesion_responsable'),
+    cliente: leerConfig(db, 'sesion_cliente'),
   }));
 
-  ipcMain.handle('config:guardarSesion', (event, { proyecto, responsable } = {}) => {
+  ipcMain.handle('config:guardarSesion', (event, { proyecto, responsable, cliente } = {}) => {
     if (!proyecto || !proyecto.trim()) throw new Error('La obra es obligatoria.');
     if (!responsable || !responsable.trim()) throw new Error('El responsable es obligatorio.');
 
     db.transaction(() => {
       escribirConfig(db, 'sesion_proyecto', proyecto.trim());
       escribirConfig(db, 'sesion_responsable', responsable.trim());
+      escribirConfig(db, 'sesion_cliente', (cliente || '').trim());
     })();
 
-    return { proyecto: proyecto.trim(), responsable: responsable.trim() };
+    return { proyecto: proyecto.trim(), responsable: responsable.trim(), cliente: (cliente || '').trim() };
+  });
+
+  ipcMain.handle('config:obtenerOficina', () => ({
+    proyectos: JSON.parse(leerConfig(db, 'oficina_proyectos') || '[]'),
+    jefe: leerConfig(db, 'oficina_jefe') || '',
+    registradores: JSON.parse(leerConfig(db, 'oficina_registradores') || '[]'),
+    staff: JSON.parse(leerConfig(db, 'oficina_staff') || '[]'),
+    especialidades: JSON.parse(leerConfig(db, 'oficina_especialidades') || '[]'),
+  }));
+
+  ipcMain.handle('config:guardarOficina', (event, config) => {
+    db.transaction(() => {
+      escribirConfig(db, 'oficina_proyectos', JSON.stringify(config.proyectos || []));
+      escribirConfig(db, 'oficina_jefe', (config.jefe || '').trim());
+      escribirConfig(db, 'oficina_registradores', JSON.stringify(config.registradores || []));
+      escribirConfig(db, 'oficina_staff', JSON.stringify(config.staff || []));
+      escribirConfig(db, 'oficina_especialidades', JSON.stringify(config.especialidades || []));
+    })();
+    return true;
   });
 
   ipcMain.handle('config:obtenerOnboardingVisto', () => leerConfig(db, 'onboarding_visto') === '1');

@@ -23,14 +23,7 @@ function inicialesDe(texto) {
   return `${limpio}XX`.slice(0, 2);
 }
 
-/**
- * Identidad del dispositivo, creada una sola vez a partir del nombre del
- * equipo. Sin módulo de usuario, esto es lo que responde "de dónde salió
- * este protocolo" en una auditoría.
- */
-function idDeEsteDispositivo(db) {
-  return obtenerOCrearIdDispositivo(db, inicialesDe(os.hostname()));
-}
+
 
 /**
  * Completa las zonas que la app llena sola, para que el registrador no
@@ -39,11 +32,11 @@ function idDeEsteDispositivo(db) {
  * `correlativo` solo se pide si el formato tiene esa zona, y consume un
  * número de la serie — por eso se resuelve una única vez, al crear.
  */
-function valoresAutomaticos(campos, { proyecto, responsable, correlativo }) {
+function valoresAutomaticos(campos, { proyecto, cliente, correlativo }) {
   const automaticos = {};
   for (const campo of campos) {
     if (campo.tipo_dato === 'proyecto') automaticos[campo.clave_campo] = proyecto;
-    if (campo.tipo_dato === 'responsable') automaticos[campo.clave_campo] = responsable;
+    if (campo.tipo_dato === 'cliente') automaticos[campo.clave_campo] = cliente;
     if (campo.tipo_dato === 'correlativo' && correlativo) automaticos[campo.clave_campo] = correlativo;
   }
   return automaticos;
@@ -66,9 +59,7 @@ function registrar(ipcMain, { db, dialog, shell, carpetaFotos, carpetaProtocolos
     return validarValoresProtocolo(campos, valoresPorClave || {});
   });
 
-  ipcMain.handle('protocolos:crear', (event, datos) => {
-    const { templateId, versionUsada, proyecto, especialidad, responsable, valoresPorClave } = datos;
-
+  ipcMain.handle('protocolos:crear', (event, { templateId, versionUsada, especialidad, proyecto, cliente, responsable, valoresPorClave }) => {
     if (!proyecto || !String(proyecto).trim()) throw new Error('Falta la obra en la sesión.');
     if (!responsable || !String(responsable).trim()) throw new Error('Falta el responsable en la sesión.');
 
@@ -79,7 +70,7 @@ function registrar(ipcMain, { db, dialog, shell, carpetaFotos, carpetaProtocolos
     // consumir un número de la serie ni del código único.
     const validacionPrevia = validarValoresProtocolo(
       campos,
-      { ...(valoresPorClave || {}), ...valoresAutomaticos(campos, { proyecto, responsable, correlativo: '0' }) }
+      { ...(valoresPorClave || {}), ...valoresAutomaticos(campos, { proyecto, cliente, correlativo: '0' }) }
     );
     if (!validacionPrevia.valido) return { ok: false, errores: validacionPrevia.errores };
 
@@ -92,7 +83,7 @@ function registrar(ipcMain, { db, dialog, shell, carpetaFotos, carpetaProtocolos
     // proyecto o responsable quedaría vacía en el papel.
     const valores = {
       ...(valoresPorClave || {}),
-      ...valoresAutomaticos(campos, { proyecto, responsable, correlativo }),
+      ...valoresAutomaticos(campos, { proyecto, cliente, correlativo }),
     };
 
     const valoresPorCampoId = {};
@@ -100,8 +91,7 @@ function registrar(ipcMain, { db, dialog, shell, carpetaFotos, carpetaProtocolos
       valoresPorCampoId[campo.id] = valores[campo.clave_campo] ?? '';
     }
 
-    // El dispositivo se resuelve igual, porque va dentro del código único.
-    idDeEsteDispositivo(db);
+    // El código único se genera con Proyecto, Especialidad y Correlativo
     const codigoProtocolo = generarCodigoUnico(db, { especialidad, proyecto });
 
     const protocoloId = queries.crearProtocolo(db, {
@@ -161,4 +151,4 @@ function registrar(ipcMain, { db, dialog, shell, carpetaFotos, carpetaProtocolos
 
 }
 
-module.exports = { registrar, inicialesDe, idDeEsteDispositivo, valoresAutomaticos };
+module.exports = { registrar, inicialesDe, valoresAutomaticos };

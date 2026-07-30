@@ -65,7 +65,7 @@ function registrar(ipcMain, { db, dialog, shell, carpetaEscaneados }) {
    * que nadie lo haya decidido borraría una baja del registro, y elegir la
    * fila equivocada en el log es un error fácil de cometer.
    */
-  ipcMain.handle('log:adjuntarPdfEscaneado', async (event, protocoloId) => {
+  ipcMain.handle('log:adjuntarPdfEscaneado', async (event, { protocoloId, usuario }) => {
     const protocolo = queries.obtenerProtocolo(db, protocoloId);
     if (!protocolo) throw new Error(`El protocolo ${protocoloId} no existe.`);
 
@@ -113,7 +113,8 @@ function registrar(ipcMain, { db, dialog, shell, carpetaEscaneados }) {
     queries.adjuntarPdfEscaneado(db, protocoloId, destino);
 
     if (!yaEstabaCerrado) {
-      queries.cambiarEstadoProtocolo(db, protocoloId, 'cerrado', responsableDelCierre(db, protocolo));
+      const responsable = usuario && String(usuario).trim() ? String(usuario).trim() : responsableDelCierre(db, protocolo);
+      queries.cambiarEstadoProtocolo(db, protocoloId, 'cerrado', responsable);
     }
 
     return { ok: true, ruta: destino, reemplazado: yaEstabaCerrado };

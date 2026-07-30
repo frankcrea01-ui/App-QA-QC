@@ -8,7 +8,7 @@
  * combinando un ID de dispositivo fijo con un correlativo local.
  */
 
-const { PREFIJOS_ESPECIALIDAD } = require('../shared/constantes');
+
 
 /**
  * Normaliza el nombre de especialidad a su prefijo de 3 letras.
@@ -21,7 +21,7 @@ const { PREFIJOS_ESPECIALIDAD } = require('../shared/constantes');
  * Si no está en el catálogo, genera un prefijo con las 3 primeras letras
  * en vez de fallar, para que un formato "raro" no bloquee la creación.
  */
-function prefijoEspecialidad(especialidad) {
+function prefijoEspecialidad(db, especialidad) {
   if (!especialidad || typeof especialidad !== 'string') {
     throw new Error('Especialidad es obligatoria para generar el código único.');
   }
@@ -33,7 +33,17 @@ function prefijoEspecialidad(especialidad) {
     .replace(/[̀-ͯ]/g, '')
     .replace(/\s+/g, ' ');
 
-  if (PREFIJOS_ESPECIALIDAD[clave]) return PREFIJOS_ESPECIALIDAD[clave];
+  const row = db.prepare(`SELECT valor FROM config_dispositivo WHERE clave = 'oficina_especialidades'`).get();
+  if (row) {
+    try {
+      const especialidades = JSON.parse(row.valor);
+      const enc = especialidades.find(e => 
+        e.nombre.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ') === clave
+      );
+      if (enc && enc.prefijo) return enc.prefijo.toUpperCase();
+    } catch(e) {}
+  }
+  
   return clave.slice(0, 3).toUpperCase().padEnd(3, 'X');
 }
 
@@ -81,13 +91,11 @@ function obtenerOCrearIdDispositivo(db, inicialesUsuario) {
 }
 
 /**
- * Devuelve el siguiente correlativo local para el año dado.
- * El correlativo vive SOLO en este dispositivo — nunca se comparte
- * ni se consulta a un servidor, por eso nunca compite con el
- * contador de otro dispositivo.
+ * Devuelve el siguiente correlativo local para el proyecto y especialidad.
+ * El correlativo vive SOLO en este dispositivo.
  */
-function siguienteCorrelativo(db, anio) {
-  const clave = `correlativo_${anio}`;
+function siguienteCorrelativo(db, proyecto, prefijo) {
+  const clave = `correlativo_${proyecto}_${prefijo}`;
   const row = db.prepare(`SELECT valor FROM config_dispositivo WHERE clave = ?`).get(clave);
 
   const actual = row ? parseInt(row.valor, 10) : 0;
@@ -103,24 +111,22 @@ function siguienteCorrelativo(db, anio) {
 
 /**
  * Genera un código único de protocolo, completamente offline.
+ * Formato: [PROYECTO]-[ESPECIALIDAD]-[CORRELATIVO]
  *
  * @param {import('better-sqlite3').Database} db - conexión SQLite abierta
  * @param {Object} params
  * @param {string} params.especialidad - ej: "estructura"
  * @param {string} params.proyecto - ej: "PROY01"
- * @param {string} [params.inicialesUsuario] - solo requerido la 1ra vez que se usa el dispositivo
- * @param {number} [params.anio] - por defecto, año actual
- * @returns {string} código único, ej: "EST-PROY01-JC-0007-2026"
+ * @returns {string} código único, ej: "SERENA-EST-001"
  */
-function generarCodigoUnico(db, { especialidad, proyecto, inicialesUsuario, anio } = {}) {
-  const anioFinal = anio || new Date().getFullYear();
-  const prefijo = prefijoEspecialidad(especialidad);
+function generarCodigoUnico(db, { especialidad, proyecto } = {}) {
+  const prefijo = prefijoEspecialidad(db, especialidad);
   const proyectoNorm = normalizarProyecto(proyecto);
-  const idDispositivo = obtenerOCrearIdDispositivo(db, inicialesUsuario);
-  const correlativo = siguienteCorrelativo(db, anioFinal);
-  const correlativoStr = String(correlativo).padStart(4, '0');
+  
+  const correlativo = siguienteCorrelativo(db, proyectoNorm, prefijo);
+  const correlativoStr = String(correlativo).padStart(3, '0');
 
-  return `${prefijo}-${proyectoNorm}-${idDispositivo}-${correlativoStr}-${anioFinal}`;
+  return `${proyectoNorm}-${prefijo}-${correlativoStr}`;
 }
 
 module.exports = {

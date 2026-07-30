@@ -11,6 +11,74 @@
   margin-bottom: 16px;
 }
 
+.filtro-busqueda input {
+  padding: 0.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  width: 200px;
+}
+
+/* EDT Árbol */
+.edt-arbol {
+  background: var(--fondo);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-top: 1rem;
+}
+
+.edt-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.edt-header:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.edt-icono {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.edt-hijos {
+  margin-left: 1.5rem;
+  border-left: 1px solid var(--borde);
+  padding-left: 0.5rem;
+}
+
+.edt-hojas {
+  margin-left: 1.5rem;
+  border-left: 1px solid var(--borde);
+  padding-left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.edt-hoja {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  background: var(--fondo-app);
+  border: 1px solid var(--borde);
+}
+
+.edt-hoja:hover {
+  background: white;
+  border-color: var(--primario);
+}
+
+.edt-hoja .estado-bolita {
+  margin-right: 0.5rem;
+}
+
 .tarjeta-estado {
   flex: 1;
   border: 1px solid #ddd;
@@ -19,6 +87,18 @@
   text-align: center;
   display: flex;
   flex-direction: column;
+}
+
+.tabla-campos-vacia {
+  padding: 1rem;
+  color: var(--texto-secundario);
+  text-align: center;
+}
+
+.acciones-rapidas {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .tarjeta-total {

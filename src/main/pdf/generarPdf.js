@@ -64,7 +64,34 @@ async function generarPdfLlenado(bytesPdfOriginal, campos, valores) {
     const valor = valores[campo.clave_campo];
 
     if (campo.tipo_dato === 'check') {
-      if (valor) dibujarCheck(pagina, caja);
+      let opciones = {};
+      try { opciones = JSON.parse(campo.opciones || '{}'); } catch(e){}
+      const filas = opciones.filas || 1;
+      const columnas = opciones.columnas || 1;
+
+      if (filas > 1 || columnas > 1) {
+        if (!valor) continue;
+        let selecciones = [];
+        try { selecciones = JSON.parse(valor); } catch(e){}
+        
+        // Se asume que el usuario dibuja la zona solo sobre las columnas de checkboxes.
+        const cWidth = caja.ancho / columnas;
+        const cHeight = caja.alto / filas;
+
+        selecciones.forEach((colIndex, r) => {
+          if (colIndex !== null && colIndex !== undefined) {
+            const subCaja = {
+              izquierda: caja.izquierda + colIndex * cWidth,
+              abajo: caja.arriba - (r + 1) * cHeight,
+              ancho: cWidth,
+              alto: cHeight
+            };
+            dibujarCheck(pagina, subCaja);
+          }
+        });
+      } else {
+        if (valor) dibujarCheck(pagina, caja);
+      }
       continue;
     }
 

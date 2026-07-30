@@ -68,7 +68,7 @@ export default function VistaPrevia({ pdfBytes, templateId, codigoPlantilla, onV
             <span>
               Página {paginaActual} de {numPaginas}
               {' · '}
-              {camposDePaginaActual.length} zona{camposDePaginaActual.length === 1 ? '' : 's'} acá
+              {camposDePaginaActual.length} zona{camposDePaginaActual.length === 1 ? '' : 's'} aquí
             </span>
             <button type="button" disabled={paginaActual >= numPaginas} onClick={() => setPaginaActual((p) => p + 1)}>
               Siguiente →

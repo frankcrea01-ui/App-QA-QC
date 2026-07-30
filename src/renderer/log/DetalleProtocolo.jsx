@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import BotonGenerarPdf from '../campo/BotonGenerarPdf.jsx';
+import { useConstantes } from '../useConstantes.js';
+import BotonGenerarPdf from '../shared/BotonGenerarPdf.jsx';
 import CierreProtocolo from './CierreProtocolo.jsx';
 
 export default function DetalleProtocolo({ protocoloId, estados, onCerrar, onCambio }) {
+  const { staff } = useConstantes();
   const [detalle, setDetalle] = useState(null);
   const [estadoNuevo, setEstadoNuevo] = useState('');
   const [usuario, setUsuario] = useState('');
@@ -10,7 +12,10 @@ export default function DetalleProtocolo({ protocoloId, estados, onCerrar, onCam
   const [guardando, setGuardando] = useState(false);
 
   const recargar = useCallback(
-    () => window.api.log.obtenerDetalle(protocoloId).then(setDetalle),
+    () => window.api.log.obtenerDetalle(protocoloId).then((d) => {
+      setDetalle(d);
+      if (!usuario) setUsuario(d.protocolo.creado_por || '');
+    }),
     [protocoloId]
   );
 
@@ -23,14 +28,14 @@ export default function DetalleProtocolo({ protocoloId, estados, onCerrar, onCam
     setMensaje(null);
 
     if (!estadoNuevo) {
-      setMensaje('Elegí a qué estado pasa el protocolo.');
+      setMensaje('Elige a qué estado pasa el protocolo.');
       return;
     }
 
     setGuardando(true);
     try {
-      // El proceso principal valida la transición y exige responsable:
-      // acá solo se muestra lo que responde.
+      // El registrador responde lo que dice el papel (incluso vacío);
+      // aquí solo se muestra lo que responde.
       //
       // `reactivar` viaja solo desde este formulario, nunca desde el cierre
       // automático: sacar un protocolo de anulado es una decisión de alguien.
@@ -107,29 +112,40 @@ export default function DetalleProtocolo({ protocoloId, estados, onCerrar, onCam
         </tbody>
       </table>
 
-      <h3>{estaAnulado ? 'Reactivar protocolo' : 'Cambiar estado'}</h3>
+      <h3>{estaAnulado ? 'Reactivar protocolo' : 'Opciones avanzadas (Anular)'}</h3>
       {estaAnulado && (
         <p className="aviso-anulado">
           Este protocolo está anulado y no se cierra solo, ni siquiera cargando el
-          escaneado firmado. Para volver a usarlo, elegí en qué estado queda y
-          firmá el cambio — la reactivación queda en el historial.
+          escaneado firmado. Para volver a usarlo, elige en qué estado queda y
+          firma el cambio — la reactivación queda en el historial.
         </p>
       )}
       <form onSubmit={manejarCambiarEstado} className="form-cambiar-estado">
         <select value={estadoNuevo} onChange={(e) => setEstadoNuevo(e.target.value)}>
           <option value="">Elegir estado…</option>
-          {estados.filter((e) => e !== protocolo.estado).map((e) => (
-            <option key={e} value={e}>{e}</option>
+          {estados.filter((e) => {
+            if (e === protocolo.estado) return false;
+            if (!estaAnulado && e !== 'anulado') return false; // Solo permitir anular si no lo está
+            return true;
+          }).map((e) => (
+            <option key={e} value={e}>{e.replace('_', ' ')}</option>
           ))}
         </select>
-        <input
-          type="text"
-          placeholder="Tu nombre"
-          value={usuario}
-          onChange={(e) => setUsuario(e.target.value)}
-        />
+        {staff && staff.length > 0 ? (
+          <select value={usuario} onChange={(e) => setUsuario(e.target.value)}>
+            <option value="">Tu nombre…</option>
+            {staff.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+        ) : (
+          <input
+            type="text"
+            placeholder="Tu nombre"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+          />
+        )}
         <button type="submit" disabled={guardando}>
-          {estaAnulado ? 'Reactivar protocolo' : 'Confirmar cambio'}
+          {estaAnulado ? 'Reactivar protocolo' : 'Anular protocolo'}
         </button>
       </form>
       {mensaje && <p className="mensaje-error">{mensaje}</p>}

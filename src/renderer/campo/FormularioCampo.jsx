@@ -1,18 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import CampoDinamico from './CampoDinamico.jsx';
-import BotonGenerarPdf from './BotonGenerarPdf.jsx';
-import { useConstantes } from '../constantes.js';
+import BotonGenerarPdf from '../shared/BotonGenerarPdf.jsx';
+import { useConstantes } from '../useConstantes.js';
 
 /** Qué muestra el bloque de solo lectura para cada zona automática. */
 function valorAutomatico(tipo, sesion) {
   if (tipo === 'proyecto') return sesion.proyecto;
+  if (tipo === 'cliente') return sesion.cliente;
   if (tipo === 'responsable') return sesion.responsable;
   if (tipo === 'correlativo') return 'se asigna al guardar';
   return '';
 }
 
 export default function FormularioCampo({ template, sesion, onVolver }) {
-  const { tiposAutomaticos } = useConstantes();
+  const { tiposAutomaticos, staff } = useConstantes();
   const [campos, setCampos] = useState(null);
   const [valores, setValores] = useState({});
   const [erroresPorCampo, setErroresPorCampo] = useState({});
@@ -63,6 +64,7 @@ export default function FormularioCampo({ template, sesion, onVolver }) {
         versionUsada: template.version,
         especialidad: template.especialidad,
         proyecto: sesion.proyecto,
+        cliente: sesion.cliente,
         responsable: sesion.responsable,
         valoresPorClave: valores,
       });
@@ -71,7 +73,7 @@ export default function FormularioCampo({ template, sesion, onVolver }) {
         const errores = {};
         for (const err of respuesta.errores) errores[err.clave_campo] = err.mensaje;
         setErroresPorCampo(errores);
-        setErrorGeneral('Hay campos con errores, revisalos antes de guardar.');
+        setErrorGeneral('Hay campos con errores, revísalos antes de guardar.');
         return;
       }
 
@@ -130,6 +132,7 @@ export default function FormularioCampo({ template, sesion, onVolver }) {
           error={erroresPorCampo[campo.clave_campo]}
           onChange={(valor) => manejarCambioValor(campo.clave_campo, valor)}
           onBlur={() => manejarBlurValor(campo)}
+          staff={staff}
         />
       ))}
 

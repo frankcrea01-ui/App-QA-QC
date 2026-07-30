@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import BotonGenerarPdf from '../shared/BotonGenerarPdf.jsx';
 
-export default function TablaProtocolos({ especialidades, estados, recargarToken, onSeleccionar }) {
+export default function TablaProtocolos({ especialidades, estados, recargarToken, onSeleccionar, onCambio }) {
   const [filtroEspecialidad, setFiltroEspecialidad] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('');
   const [protocolos, setProtocolos] = useState([]);
@@ -54,7 +55,16 @@ export default function TablaProtocolos({ especialidades, estados, recargarToken
               <td>{p.estado}</td>
               <td>{p.fecha_creacion}</td>
               <td>
-                <button type="button" onClick={() => onSeleccionar(p.id)}>Ver detalle</button>
+                <div className="acciones-rapidas">
+                  {(p.estado === 'en_proceso' || p.estado === 'en_firma') && (
+                    <BotonGenerarPdf
+                      protocoloId={p.id}
+                      etiqueta="📄 PDF"
+                      onGenerado={onCambio}
+                    />
+                  )}
+                  <button type="button" onClick={() => onSeleccionar(p.id)}>Ver detalle</button>
+                </div>
               </td>
             </tr>
           ))}

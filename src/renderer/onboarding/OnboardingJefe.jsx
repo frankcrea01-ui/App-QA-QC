@@ -4,11 +4,11 @@ import './onboarding.css';
 const PASOS = [
   {
     titulo: 'Oficina de calidad → Plantillas',
-    texto: 'Cargá el PDF del protocolo y dibujá con el mouse las zonas que se van a llenar. A cada zona le definís tipo de dato, si es obligatoria y un ejemplo.',
+    texto: 'Carga el PDF del protocolo y dibuja con el mouse las zonas que se van a llenar. A cada zona le defines tipo de dato, si es obligatoria y un ejemplo.',
   },
   {
-    titulo: 'Revisá y pasá a producción',
-    texto: 'Al guardar vas a la vista previa: el PDF con datos de ejemplo (verde = obligatorio, ámbar = opcional). Recién cuando apretás "Pasar a producción" la plantilla queda disponible en obra.',
+    titulo: 'Revisa y pasa a producción',
+    texto: 'Al guardar vas a la vista previa: el PDF con datos de ejemplo (verde = obligatorio, ámbar = opcional). Recién cuando presionas "Pasar a producción" la plantilla queda disponible en obra.',
   },
   {
     titulo: 'Registro en obra',
@@ -33,8 +33,8 @@ export default function OnboardingJefe({ onCerrar }) {
           </div>
         ))}
         <p className="onboarding-nota">
-          Recordá: la firma física sigue siendo el cierre legal real. El estado
-          "cerrado" acá es un registro digital de respaldo, no una firma electrónica.
+          Recuerda: la firma física sigue siendo el cierre legal real. El estado
+          "cerrado" aquí es un registro digital de respaldo, no una firma electrónica.
         </p>
         <button type="button" onClick={onCerrar}>Entendido, empezar</button>
       </div>

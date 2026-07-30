@@ -6,7 +6,7 @@ import PopoverCampo from './PopoverCampo.jsx';
 import TablaCampos from './TablaCampos.jsx';
 import PanelPlantillasExistentes from './PanelPlantillasExistentes.jsx';
 import VistaPrevia from '../preview/VistaPrevia.jsx';
-import { useConstantes } from '../constantes.js';
+import { useConstantes } from '../useConstantes.js';
 import './editor.css';
 
 let contadorIdLocal = 0;
@@ -282,7 +282,7 @@ export default function EditorPlantilla() {
               <span>
                 Página {paginaActual} de {numPaginas}
                 {' · '}
-                {camposDePaginaActual.length} zona{camposDePaginaActual.length === 1 ? '' : 's'} acá
+                {camposDePaginaActual.length} zona{camposDePaginaActual.length === 1 ? '' : 's'} aquí
               </span>
               <button
                 type="button"

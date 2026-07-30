@@ -6,8 +6,9 @@ const AYUDA_TIPO = {
   fecha: 'El registrador elige en un calendario.',
   check: 'El registrador marca.',
   correlativo: 'Automático: 001, 002, 003…',
+  responsable: 'Manual: se selecciona del staff.',
   proyecto: 'Automático: el nombre de la obra.',
-  responsable: 'Automático: quien está llenando.',
+  cliente: 'Automático: el cliente asociado a la obra.',
 };
 
 /**
@@ -19,24 +20,34 @@ const AYUDA_TIPO = {
 export default function PopoverCampo({ zona, tiposDato, tiposAutomaticos, onConfirmar, onCancelar, error }) {
   const [etiqueta, setEtiqueta] = useState('');
   const [tipoDato, setTipoDato] = useState('texto');
+  const [tipoGeneral, setTipoGeneral] = useState('proyecto'); // sub-opción para Dato General
   const [obligatorio, setObligatorio] = useState(false);
   const [formatoCorrelativo, setFormatoCorrelativo] = useState('001');
   const [filasCheck, setFilasCheck] = useState(1);
-  const [columnasCheck, setColumnasCheck] = useState(1);
+  const [columnasCheck, setColumnasCheck] = useState(3);
+  const [encabezadosCheck, setEncabezadosCheck] = useState('Sí, No, N/A');
 
   // Un tipo automático siempre se llena, así que "obligatorio" no aplica.
-  const esAutomatico = tiposAutomaticos.includes(tipoDato);
+  const tipoReal = tipoDato === 'dato_general' ? tipoGeneral : tipoDato;
+  const esAutomatico = tiposAutomaticos.includes(tipoReal);
+  const sinEtiqueta = tipoReal === 'proyecto' || tipoReal === 'cliente';
 
   function manejarSubmit(evento) {
     evento.preventDefault();
     let opciones = null;
-    if (tipoDato === 'correlativo') opciones = JSON.stringify({ formato: formatoCorrelativo });
-    if (tipoDato === 'check') opciones = JSON.stringify({ filas: filasCheck, columnas: columnasCheck });
+    if (tipoReal === 'correlativo') opciones = JSON.stringify({ formato: formatoCorrelativo });
+    if (tipoReal === 'check') {
+      opciones = JSON.stringify({ 
+        filas: filasCheck, 
+        columnas: columnasCheck,
+        encabezados: encabezadosCheck.split(',').map(s => s.trim())
+      });
+    }
 
     onConfirmar({
       ...zona,
-      etiqueta: etiqueta.trim(),
-      tipo_dato: tipoDato,
+      etiqueta: sinEtiqueta ? (tipoReal === 'proyecto' ? 'Proyecto' : 'Cliente') : etiqueta.trim(),
+      tipo_dato: tipoReal,
       obligatorio: esAutomatico ? false : obligatorio,
       opciones,
     });
@@ -47,9 +58,9 @@ export default function PopoverCampo({ zona, tiposDato, tiposAutomaticos, onConf
       <form className="popover-campo" onSubmit={manejarSubmit}>
         <h3>Nueva zona (página {zona.pagina})</h3>
 
-        <span className="titulo-tipo">1. ¿Qué va acá?</span>
+        <span className="titulo-tipo">1. ¿Qué va aquí?</span>
         <div className="botonera-tipo-dato">
-          {tiposDato.map((tipo) => (
+          {tiposDato.filter(t => t !== 'proyecto' && t !== 'cliente').map((tipo) => (
             <button
               type="button"
               key={tipo}
@@ -59,21 +70,43 @@ export default function PopoverCampo({ zona, tiposDato, tiposAutomaticos, onConf
               {tipo}
             </button>
           ))}
+          <button
+            type="button"
+            className={tipoDato === 'dato_general' ? 'activo' : ''}
+            onClick={() => setTipoDato('dato_general')}
+          >
+            dato general
+          </button>
         </div>
-        <small className="ayuda-tipo">{AYUDA_TIPO[tipoDato]}</small>
+        
+        {tipoDato === 'dato_general' && (
+          <div className="sub-opciones-tipo">
+            <label>
+              <input type="radio" checked={tipoGeneral === 'proyecto'} onChange={() => setTipoGeneral('proyecto')} />
+              Proyecto
+            </label>
+            <label>
+              <input type="radio" checked={tipoGeneral === 'cliente'} onChange={() => setTipoGeneral('cliente')} />
+              Cliente
+            </label>
+          </div>
+        )}
+        <small className="ayuda-tipo">{AYUDA_TIPO[tipoReal]}</small>
 
-        <label>
-          2. Etiqueta
-          <input
-            type="text"
-            value={etiqueta}
-            onChange={(e) => setEtiqueta(e.target.value)}
-            placeholder="ej: Proyecto"
-            required
-          />
-        </label>
+        {!sinEtiqueta && (
+          <label>
+            2. Etiqueta
+            <input
+              type="text"
+              value={etiqueta}
+              onChange={(e) => setEtiqueta(e.target.value)}
+              placeholder="ej: Proyecto"
+              required
+            />
+          </label>
+        )}
 
-        {tipoDato === 'correlativo' && (
+        {tipoReal === 'correlativo' && (
           <label>
             Formato de números (ej: 01, 001, 0001)
             <input
@@ -86,26 +119,37 @@ export default function PopoverCampo({ zona, tiposDato, tiposAutomaticos, onConf
           </label>
         )}
 
-        {tipoDato === 'check' && (
-          <div className="opciones-en-linea" style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+        {tipoReal === 'check' && (
+          <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div className="opciones-en-linea" style={{ display: 'flex', gap: '1rem' }}>
+              <label>
+                Filas
+                <input
+                  type="number"
+                  min="1"
+                  value={filasCheck}
+                  onChange={(e) => setFilasCheck(parseInt(e.target.value, 10) || 1)}
+                  style={{ width: '4rem', marginLeft: '0.5rem' }}
+                />
+              </label>
+              <label>
+                Columnas
+                <input
+                  type="number"
+                  min="1"
+                  value={columnasCheck}
+                  onChange={(e) => setColumnasCheck(parseInt(e.target.value, 10) || 1)}
+                  style={{ width: '4rem', marginLeft: '0.5rem' }}
+                />
+              </label>
+            </div>
             <label>
-              Filas
+              Encabezados (separados por coma)
               <input
-                type="number"
-                min="1"
-                value={filasCheck}
-                onChange={(e) => setFilasCheck(parseInt(e.target.value, 10) || 1)}
-                style={{ width: '4rem', marginLeft: '0.5rem' }}
-              />
-            </label>
-            <label>
-              Columnas
-              <input
-                type="number"
-                min="1"
-                value={columnasCheck}
-                onChange={(e) => setColumnasCheck(parseInt(e.target.value, 10) || 1)}
-                style={{ width: '4rem', marginLeft: '0.5rem' }}
+                type="text"
+                value={encabezadosCheck}
+                onChange={(e) => setEncabezadosCheck(e.target.value)}
+                placeholder="Sí, No, N/A"
               />
             </label>
           </div>
